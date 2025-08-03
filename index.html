@@ -83,6 +83,13 @@
 </head>
 <body class="flex justify-center">
 
+    <!-- Fullscreen Startup Overlay -->
+    <div id="fullscreen-prompt" class="absolute inset-0 bg-gray-800 flex items-center justify-center z-50">
+        <button id="fullscreen-btn" class="bg-blue-500 text-white font-bold py-4 px-8 rounded-full text-2xl shadow-lg hover:bg-blue-600 transition-colors focus:outline-none">
+            Tap to Start
+        </button>
+    </div>
+
     <div class="w-full h-full flex flex-col">
         <!-- Display Screen -->
         <div class="display-area text-black text-right p-6 flex-grow flex flex-col justify-end">
@@ -129,19 +136,42 @@
     </div>
 
     <script>
-        // Get the display elements
+        // --- Fullscreen Logic ---
+        const fullscreenPrompt = document.getElementById('fullscreen-prompt');
+        const fullscreenBtn = document.getElementById('fullscreen-btn');
+
+        function enterFullscreen() {
+            const elem = document.documentElement; // Get the root element (the whole page)
+            if (elem.requestFullscreen) {
+                elem.requestFullscreen().catch(err => {
+                    // If fullscreen fails, just hide the prompt anyway
+                    fullscreenPrompt.style.display = 'none';
+                });
+            } else if (elem.webkitRequestFullscreen) { /* Safari */
+                elem.webkitRequestFullscreen().catch(err => {
+                    fullscreenPrompt.style.display = 'none';
+                });
+            } else if (elem.msRequestFullscreen) { /* IE11 */
+                elem.msRequestFullscreen();
+            }
+            // Hide the prompt after the request is made
+            fullscreenPrompt.style.display = 'none';
+        }
+
+        fullscreenBtn.addEventListener('click', enterFullscreen);
+
+
+        // --- Calculator Logic ---
         const display = document.getElementById('display');
         const historyDisplay = document.getElementById('history');
         let currentInput = '0';
         let operatorPressed = false;
         let calculationFinished = false;
 
-        // Function to update the display
         function updateDisplay() {
             display.textContent = currentInput;
         }
 
-        // Function to append a number to the display
         function appendNumber(number) {
             if (calculationFinished) {
                 currentInput = '0';
@@ -150,7 +180,7 @@
             if (currentInput === '0' && number !== '.') {
                 currentInput = number;
             } else if (number === '.' && currentInput.includes('.')) {
-                return; // Prevent multiple decimals
+                return;
             } 
             else {
                 currentInput += number;
@@ -159,21 +189,16 @@
             updateDisplay();
         }
 
-        // Function to append an operator
         function appendOperator(op) {
             calculationFinished = false;
-            // Allow starting with a minus sign
             if (currentInput === '0' && op === '-') {
                 currentInput = '-';
                 updateDisplay();
                 return;
             }
-            // Prevent adding operators if input is empty or just a minus
             if (currentInput === '' || currentInput === '-') return;
 
-            // Prevent adding multiple operators in a row
             if (operatorPressed) {
-                // Allow changing operator
                 const lastChar = currentInput.slice(-1);
                 if(['+', '-', '*', '/'].includes(lastChar)){
                     currentInput = currentInput.slice(0, -1) + op;
@@ -187,7 +212,6 @@
             updateDisplay();
         }
 
-        // Function to clear the display
         function clearDisplay() {
             currentInput = '0';
             historyDisplay.textContent = '';
@@ -196,7 +220,6 @@
             updateDisplay();
         }
 
-        // Function to delete the last character
         function deleteLast() {
              if (calculationFinished) {
                 clearDisplay();
@@ -212,7 +235,6 @@
             updateDisplay();
         }
 
-        // The magic function!
         function showMagicNumber() {
             historyDisplay.textContent = currentInput + '=';
             currentInput = '12345678';
@@ -221,7 +243,6 @@
             updateDisplay();
         }
 
-        // Initialize the display
         updateDisplay();
     </script>
 
