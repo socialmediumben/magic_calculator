@@ -1,0 +1,218 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Magic Calculator</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        /* Custom styles to match the provided image */
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #e0e0e0; /* A neutral grey for the page background */
+            touch-action: manipulation;
+        }
+        .keypad-body {
+            background-color: #F1F3F4;
+        }
+        .display-area {
+            background-color: #E8EAED; /* Light grey for the display area */
+        }
+        .calculator-grid {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 1rem; /* Adjust gap to match image */
+        }
+        .btn {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 9999px; /* Perfect circle */
+            font-size: 1.75rem; /* 28px */
+            font-weight: 500;
+            transition: background-color 0.2s ease-in-out, transform 0.1s ease-in-out;
+            aspect-ratio: 1 / 1; /* Ensure buttons are always circular */
+            -webkit-user-select: none;
+            -ms-user-select: none;
+            user-select: none;
+        }
+        .btn:active {
+            transform: scale(0.95);
+        }
+        .btn-number {
+            background-color: #E8EAED;
+            color: #202124;
+        }
+        .btn-number:hover {
+            background-color: #dde0e3;
+        }
+        .btn-operator {
+            background-color: #D2E3FC;
+            color: #1967D2;
+        }
+        .btn-operator:hover {
+            background-color: #c1d7f8;
+        }
+        .btn-ac {
+            background-color: #E8DEED;
+            color: #8E44AD;
+        }
+        .btn-ac:hover {
+            background-color: #e0d3e8;
+        }
+        .btn-equals {
+            background-color: #4285F4;
+            color: white;
+        }
+        .btn-equals:hover {
+            background-color: #3b78e4;
+        }
+    </style>
+</head>
+<body class="flex items-end sm:items-center justify-center min-h-screen">
+
+    <div class="w-full max-w-sm mx-auto rounded-t-3xl sm:rounded-3xl overflow-hidden shadow-2xl">
+        <!-- Display Screen -->
+        <div class="display-area text-black text-right p-6 h-48 flex flex-col justify-end">
+            <div id="history" class="text-2xl text-gray-500 font-light break-all"></div>
+            <div id="display" class="text-6xl font-light break-all">0</div>
+        </div>
+
+        <!-- Keypad -->
+        <div class="keypad-body p-6">
+            <div class="calculator-grid">
+                <!-- Row 1 -->
+                <button class="btn btn-ac" onclick="clearDisplay()">AC</button>
+                <button class="btn btn-operator" onclick="appendOperator('(')">(</button>
+                <button class="btn btn-operator" onclick="appendOperator(')')">)</button>
+                <button class="btn btn-operator" onclick="appendOperator('/')">÷</button>
+
+                <!-- Row 2 -->
+                <button class="btn btn-number" onclick="appendNumber('7')">7</button>
+                <button class="btn btn-number" onclick="appendNumber('8')">8</button>
+                <button class="btn btn-number" onclick="appendNumber('9')">9</button>
+                <button class="btn btn-operator" onclick="appendOperator('*')">×</button>
+
+                <!-- Row 3 -->
+                <button class="btn btn-number" onclick="appendNumber('4')">4</button>
+                <button class="btn btn-number" onclick="appendNumber('5')">5</button>
+                <button class="btn btn-number" onclick="appendNumber('6')">6</button>
+                <button class="btn btn-operator" onclick="appendOperator('-')">−</button>
+
+                <!-- Row 4 -->
+                <button class="btn btn-number" onclick="appendNumber('1')">1</button>
+                <button class="btn btn-number" onclick="appendNumber('2')">2</button>
+                <button class="btn btn-number" onclick="appendNumber('3')">3</button>
+                <button class="btn btn-operator" onclick="appendOperator('+')">+</button>
+
+                <!-- Row 5 -->
+                <button class="btn btn-number" onclick="appendNumber('0')">0</button>
+                <button class="btn btn-number" onclick="appendNumber('.')">.</button>
+                <button class="btn btn-number" onclick="deleteLast()">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-delete"><path d="M21 4H8l-7 8 7 8h13a2 2 0 0 0 2-2V6a2 2 0 0 0-2-2z"></path><line x1="18" y1="9" x2="12" y2="15"></line><line x1="12" y1="9" x2="18" y2="15"></line></svg>
+                </button>
+                <button class="btn btn-equals" onclick="showMagicNumber()">=</button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Get the display elements
+        const display = document.getElementById('display');
+        const historyDisplay = document.getElementById('history');
+        let currentInput = '0';
+        let operatorPressed = false;
+        let calculationFinished = false;
+
+        // Function to update the display
+        function updateDisplay() {
+            display.textContent = currentInput;
+        }
+
+        // Function to append a number to the display
+        function appendNumber(number) {
+            if (calculationFinished) {
+                currentInput = '0';
+                calculationFinished = false;
+            }
+            if (currentInput === '0' && number !== '.') {
+                currentInput = number;
+            } else if (number === '.' && currentInput.includes('.')) {
+                return; // Prevent multiple decimals
+            } 
+            else {
+                currentInput += number;
+            }
+            operatorPressed = false;
+            updateDisplay();
+        }
+
+        // Function to append an operator
+        function appendOperator(op) {
+            calculationFinished = false;
+            // Allow starting with a minus sign
+            if (currentInput === '0' && op === '-') {
+                currentInput = '-';
+                updateDisplay();
+                return;
+            }
+            // Prevent adding operators if input is empty or just a minus
+            if (currentInput === '' || currentInput === '-') return;
+
+            // Prevent adding multiple operators in a row
+            if (operatorPressed) {
+                // Allow changing operator
+                const lastChar = currentInput.slice(-1);
+                if(['+', '-', '*', '/'].includes(lastChar)){
+                    currentInput = currentInput.slice(0, -1) + op;
+                } else {
+                    currentInput += op;
+                }
+            } else {
+                currentInput += op;
+            }
+            operatorPressed = true;
+            updateDisplay();
+        }
+
+        // Function to clear the display
+        function clearDisplay() {
+            currentInput = '0';
+            historyDisplay.textContent = '';
+            operatorPressed = false;
+            calculationFinished = false;
+            updateDisplay();
+        }
+
+        // Function to delete the last character
+        function deleteLast() {
+             if (calculationFinished) {
+                clearDisplay();
+                return;
+            }
+            if (currentInput.length > 1) {
+                currentInput = currentInput.slice(0, -1);
+            } else {
+                currentInput = '0';
+            }
+            const lastChar = currentInput.slice(-1);
+            operatorPressed = ['+', '-', '*', '/', '(', '%'].includes(lastChar);
+            updateDisplay();
+        }
+
+        // The magic function!
+        function showMagicNumber() {
+            historyDisplay.textContent = currentInput + '=';
+            currentInput = '12345678';
+            operatorPressed = false;
+            calculationFinished = true;
+            updateDisplay();
+        }
+
+        // Initialize the display
+        updateDisplay();
+    </script>
+
+</body>
+</html>
