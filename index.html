@@ -84,10 +84,15 @@
 <body class="flex justify-center">
 
     <!-- Fullscreen Startup Overlay -->
-    <div id="fullscreen-prompt" class="absolute inset-0 bg-gray-800 flex items-center justify-center z-50">
-        <button id="fullscreen-btn" class="bg-blue-500 text-white font-bold py-4 px-8 rounded-full text-2xl shadow-lg hover:bg-blue-600 transition-colors focus:outline-none">
-            Tap to Start
-        </button>
+    <div id="fullscreen-prompt" class="absolute inset-0 bg-gray-800 flex flex-col items-center justify-center z-50 p-4">
+        <h2 class="text-2xl text-white mb-6 font-semibold">Choose the Magic Number</h2>
+        <div class="space-y-4 w-full max-w-xs">
+            <button class="magic-btn w-full bg-blue-500 text-white font-bold py-3 px-6 rounded-full text-xl shadow-lg hover:bg-blue-600 transition-colors focus:outline-none" data-magic-number="12345678">12345678</button>
+            <button class="magic-btn w-full bg-green-500 text-white font-bold py-3 px-6 rounded-full text-xl shadow-lg hover:bg-green-600 transition-colors focus:outline-none" data-magic-number="87654321">87654321</button>
+            <button class="magic-btn w-full bg-purple-500 text-white font-bold py-3 px-6 rounded-full text-xl shadow-lg hover:bg-purple-600 transition-colors focus:outline-none" data-magic-number="3.1415269">3.1415269</button>
+            <button class="magic-btn w-full bg-red-500 text-white font-bold py-3 px-6 rounded-full text-xl shadow-lg hover:bg-red-600 transition-colors focus:outline-none" data-magic-number="5318008">5318008</button>
+            <button class="magic-btn w-full bg-yellow-500 text-black font-bold py-3 px-6 rounded-full text-xl shadow-lg hover:bg-yellow-600 transition-colors focus:outline-none" data-magic-number="8675301">8675301</button>
+        </div>
     </div>
 
     <div class="w-full h-full flex flex-col">
@@ -138,7 +143,7 @@
     <script>
         // --- Fullscreen Logic ---
         const fullscreenPrompt = document.getElementById('fullscreen-prompt');
-        const fullscreenBtn = document.getElementById('fullscreen-btn');
+        const magicButtons = document.querySelectorAll('.magic-btn');
 
         function enterFullscreen() {
             const elem = document.documentElement; // Get the root element (the whole page)
@@ -158,7 +163,14 @@
             fullscreenPrompt.style.display = 'none';
         }
 
-        fullscreenBtn.addEventListener('click', enterFullscreen);
+        magicButtons.forEach(button => {
+            button.addEventListener('click', () => {
+                // Set the magic number based on the button clicked
+                magicNumber = button.dataset.magicNumber;
+                // Enter fullscreen
+                enterFullscreen();
+            });
+        });
 
 
         // --- Calculator Logic ---
@@ -167,6 +179,7 @@
         let currentInput = '0';
         let operatorPressed = false;
         let calculationFinished = false;
+        let magicNumber = '12345678'; // Default magic number
 
         function updateDisplay() {
             display.textContent = currentInput;
@@ -237,7 +250,7 @@
 
         function showMagicNumber() {
             historyDisplay.textContent = currentInput + '=';
-            currentInput = '12345678';
+            currentInput = magicNumber; // Use the stored magic number
             operatorPressed = false;
             calculationFinished = true;
             updateDisplay();
