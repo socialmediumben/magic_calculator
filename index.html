@@ -2,15 +2,19 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
     <title>Magic Calculator</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
     <style>
         /* Custom styles to match the provided image */
+        html, body {
+            height: 100%;
+            overflow: hidden; /* Prevent scrolling */
+        }
         body {
             font-family: 'Inter', sans-serif;
-            background-color: #e0e0e0; /* A neutral grey for the page background */
+            background-color: #E8EAED; /* Match display area background */
             touch-action: manipulation;
         }
         .keypad-body {
@@ -70,17 +74,17 @@
         }
     </style>
 </head>
-<body class="flex items-end sm:items-center justify-center min-h-screen">
+<body class="flex justify-center">
 
-    <div class="w-full max-w-sm mx-auto rounded-t-3xl sm:rounded-3xl overflow-hidden shadow-2xl">
+    <div class="w-full h-full flex flex-col">
         <!-- Display Screen -->
-        <div class="display-area text-black text-right p-6 h-48 flex flex-col justify-end">
+        <div class="display-area text-black text-right p-6 flex-grow flex flex-col justify-end">
             <div id="history" class="text-2xl text-gray-500 font-light break-all"></div>
             <div id="display" class="text-6xl font-light break-all">0</div>
         </div>
 
         <!-- Keypad -->
-        <div class="keypad-body p-6">
+        <div class="keypad-body p-6 rounded-t-3xl">
             <div class="calculator-grid">
                 <!-- Row 1 -->
                 <button class="btn btn-ac" onclick="clearDisplay()">AC</button>
