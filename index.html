@@ -226,11 +226,8 @@
         }
 
         function clearDisplay() {
-            currentInput = '0';
-            historyDisplay.textContent = '';
-            operatorPressed = false;
-            calculationFinished = false;
-            updateDisplay();
+            // This will navigate the tab to Google, effectively "closing" the app.
+            window.location.href = 'https://www.google.com';
         }
 
         function deleteLast() {
