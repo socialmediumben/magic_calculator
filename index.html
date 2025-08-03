@@ -8,7 +8,7 @@
     <meta name="apple-mobile-web-app-capable" content="yes">
     <meta name="mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-    <meta name="theme-color" content="#E8EAED">
+    <meta name="theme-color" content="#d6e5ed">
 
     <title>Magic Calculator</title>
     <script src="https://cdn.tailwindcss.com"></script>
@@ -21,14 +21,14 @@
         }
         body {
             font-family: 'Inter', sans-serif;
-            background-color: #E8EAED; /* Match display area background */
+            background-color: #d6e5ed; /* Match new display area background */
             touch-action: manipulation;
         }
         .keypad-body {
             background-color: #F1F3F4;
         }
         .display-area {
-            background-color: #E8EAED; /* Light grey for the display area */
+            background-color: #d6e5ed; /* New color for the answer window */
         }
         .calculator-grid {
             display: grid;
@@ -40,7 +40,7 @@
             align-items: center;
             justify-content: center;
             border-radius: 9999px; /* Perfect circle */
-            font-size: 1.75rem; /* 28px */
+            font-size: 2.25rem; /* Larger font size */
             font-weight: 500;
             transition: background-color 0.2s ease-in-out, transform 0.1s ease-in-out;
             aspect-ratio: 1 / 1; /* Ensure buttons are always circular */
@@ -52,32 +52,35 @@
             transform: scale(0.95);
         }
         .btn-number {
-            background-color: #E8EAED;
-            color: #202124;
+            background-color: #eaf2f7; /* New color for number buttons */
+            color: #40484c; /* New color for digits */
         }
         .btn-number:hover {
-            background-color: #dde0e3;
+            background-color: #d8e0e5;
         }
         .btn-operator {
-            background-color: #D2E3FC;
-            color: #1967D2;
+            background-color: #d0e6f2; /* New color for operators */
+            color: #40484c; /* New color for symbols */
         }
         .btn-operator:hover {
-            background-color: #c1d7f8;
+            background-color: #b9d4e0;
         }
         .btn-ac {
-            background-color: #E8DEED;
-            color: #8E44AD;
+            background-color: #e4dfff; /* New color for AC */
+            color: #40484c; /* New color for symbols */
         }
         .btn-ac:hover {
-            background-color: #e0d3e8;
+            background-color: #d3cff0;
         }
         .btn-equals {
-            background-color: #4285F4;
-            color: white;
+            background-color: #bfe9ff; /* New color for equals */
+            color: #40484c; /* New color for symbols */
         }
         .btn-equals:hover {
-            background-color: #3b78e4;
+            background-color: #a8d7e8;
+        }
+        .advanced-op-text {
+            color: #40484c;
         }
     </style>
 </head>
@@ -105,7 +108,7 @@
         <!-- Keypad -->
         <div class="keypad-body p-6 rounded-t-3xl">
             <!-- Advanced Operators -->
-            <div class="flex justify-around items-center text-gray-700 pb-4">
+            <div class="flex justify-around items-center advanced-op-text pb-4">
                 <span class="text-2xl font-medium">√</span>
                 <span class="text-2xl font-medium">π</span>
                 <span class="text-2xl font-medium">^</span>
